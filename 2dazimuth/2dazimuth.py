@@ -33,6 +33,9 @@ class Azimuth2d():
 
     simple = True
 
+    def bound360(self, angle):
+        return angle % 360
+
     def quadrant(self, angle):
         rem = angle % 360
         if rem >= 0 and rem <= 90:
@@ -70,6 +73,7 @@ class Azimuth2d():
         directions = dirs
         md = maxd
         imps = imp
+        angle = self.bound360(angle)
         if self.simple:
             directions = simple_dirs
             md = simple_maxd
