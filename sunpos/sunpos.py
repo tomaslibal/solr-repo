@@ -11,7 +11,7 @@ from julday import JulianDayNumber
     @param jdn julian day number
 """
 def planet_mean_anomaly(m0, m1, jdn):
-    return (m0 + m1 x (jdn - JulianDayNumber(2000, 1, 1))) % 360
+    return (m0 + m1 * (jdn - JulianDayNumber(2000, 1, 1))) % 360
 
 
 class SunposApp():
