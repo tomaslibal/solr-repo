@@ -1,4 +1,5 @@
 import fire
+from datetime import datetime
 from julday import JulianDayNumber
 from constants import MEAN_ANOMALY, TRUE_ANOMALY_COEFF, PERIPHELION, OBLIQUITY, SIDEREAL
 from math import sin, cos, tan, asin, atan2, radians, degrees
@@ -120,7 +121,7 @@ def planet_mean_anomaly(m0, m1, jdn):
 
 def true_anomaly(c1, c2, c3, c4, c5, c6, m):
     C = (c1 * sin(radians(m))) + (c2 * sin(radians(2*m))) + (c3 * sin(radians(3*m))) + (c4 * sin(radians(4*m))) + (c5 * sin(radians(5*m))) + (c6 * sin(radians(6*m)))
-    print "C={0}".format(C)
+    # print "C={0}".format(C)
     return m + C
 
 def ecliptic_longitude(v, P):
@@ -154,8 +155,13 @@ def celestial_body_pos(theta, a, phi, d):
     h = degrees(asin(sin(radians(phi)) * sin(radians(d)) + cos(radians(phi)) * cos(radians(d)) * cos(radians(H))))
     return (A, h)
 
+def format_time(hour, minute):
+    d = datetime(2000, 1, 1, hour, minute, 0)
+    return d.strftime('%I:%M')
+
+
 class SunposApp():
-    def position(self, year, month, day, lat, lon, planet='Earth'):
+    def position(self, year, month, day, lat, lon, hour=12, minute=0, planet='Earth'):
         J = round(JulianDayNumber(year, month, day).jdn())
         M = planet_mean_anomaly(MEAN_ANOMALY[planet][0], MEAN_ANOMALY[planet][1], J)
         true_anom = TRUE_ANOMALY_COEFF[planet]
@@ -166,6 +172,7 @@ class SunposApp():
         phi = lat
         theta = sidereal_time(SIDEREAL[planet][0], SIDEREAL[planet][1], J, lon)
         A, h = celestial_body_pos(theta, a, phi, d)
+        """
         print "M={0}".format(M)
         print "v={0}".format(v)
         print "l={0}".format(l)
@@ -174,8 +181,11 @@ class SunposApp():
         print "theta={0}".format(theta)
         print "H={0}".format(theta-a)
         print "--------"
-        print "A={0}".format(A)
-        print "h={0}".format(h)
+        """
+        print "{0}UTC on {1}/{2}/{3}".format(format_time(hour, minute), year, month, day)
+        print "lat={0}N lon={1}W".format(lat, lon)
+        print "azimuth A={0}".format(A)
+        print "altitude h={0}".format(h)
 
         
 if __name__ == '__main__':
