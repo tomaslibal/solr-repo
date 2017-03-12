@@ -1,7 +1,7 @@
 import fire
 from julday import JulianDayNumber
-from constants import MEAN_ANOMALY, TRUE_ANOMALY_COEFF, PERIPHELION, OBLIQUITY
-from math import sin, atan2
+from constants import MEAN_ANOMALY, TRUE_ANOMALY_COEFF, PERIPHELION, OBLIQUITY, SIDEREAL
+from math import sin, cos, tan, asin, atan2, radians, degrees
 
 
 """
@@ -64,7 +64,7 @@ from math import sin, atan2
     These coordinates are the right ascension a (alpha) and the declination
     d (delta).
 
-    a = arctan(sin(l) * cos(e), cos l)
+    a = arctan(sin(l) * cos(e), cos(l))
     d = arcsin(sin(l) * sin(e))
 
     But these values can also be estimated using a table and a simpler formula.
@@ -77,6 +77,8 @@ from math import sin, atan2
     of the planet relative to the stars.
 
     We already have the latitude and the longitude.
+
+    The sidereal time is
 
     o = (o0 + o1 * (J - J2000) - l) mod 360
 
@@ -113,19 +115,68 @@ from math import sin, atan2
     @param jdn julian day number
 """
 def planet_mean_anomaly(m0, m1, jdn):
-    return (m0 + m1 * (jdn - JulianDayNumber(2000, 1, 1).jdn())) % 360
+    return (m0 + m1 * (jdn - round(JulianDayNumber(2000, 1, 1).jdn()))) % 360
 
 
 def true_anomaly(c1, c2, c3, c4, c5, c6, m):
-    return c1 * sin(m) + c2 * sin(2*m) + c3 * sin(3*m) + c4 * sin(4*m) + c5 * sin(5*m) + c6 * sin(6*m)
+    C = (c1 * sin(radians(m))) + (c2 * sin(radians(2*m))) + (c3 * sin(radians(3*m))) + (c4 * sin(radians(4*m))) + (c5 * sin(radians(5*m))) + (c6 * sin(radians(6*m)))
+    print "C={0}".format(C)
+    return m + C
+
+def ecliptic_longitude(v, P):
+    return (v + P + 180) % 360
+
+def right_ascension(l, e):
+    return degrees(atan2(sin(radians(l)) * cos(radians(e)), cos(radians(l))))
+
+def declination(l, e):
+    return degrees(asin(sin(radians(l)) * sin(radians(e))))
+
+"""
+    lon_west: longitude in degrees west of the prime meridian; if the place lies
+    to the east of the prime meridian then it needs to be negated (i.e. 
+    the center of Netherlands is 5.75deg east of the prime meridian so it has
+    either 5.75deg E or -5.75deg W longitude.
+"""
+def sidereal_time(theta0, theta1, J, lon_west):
+    J2000 = round(JulianDayNumber(2000, 1, 1).jdn())
+    return (theta0 + theta1 * (J - J2000) - lon_west) % 360
+
+"""
+    Relative to the observer's horizon (assumes the horizon plane? Meaning that
+    if the horizon is obstructed by some geographical features the horizon is
+    still assumed to be as if the observer stood at 0m above/below the ground
+    with no elevation around)
+"""
+def celestial_body_pos(theta, a, phi, d):
+    H = theta - a
+    A = degrees(atan2(sin(radians(H)), cos(radians(H)) * sin(radians(phi)) - tan(radians(d)) * cos(radians(phi))))
+    h = degrees(asin(sin(radians(phi)) * sin(radians(d)) + cos(radians(phi)) * cos(radians(d)) * cos(radians(H))))
+    return (A, h)
 
 class SunposApp():
     def position(self, year, month, day, lat, lon, planet='Earth'):
-        J = JulianDayNumber(2017, 1, 1).jdn()
+        J = round(JulianDayNumber(year, month, day).jdn())
         M = planet_mean_anomaly(MEAN_ANOMALY[planet][0], MEAN_ANOMALY[planet][1], J)
         true_anom = TRUE_ANOMALY_COEFF[planet]
         v = true_anomaly(true_anom[0], true_anom[1], true_anom[2], true_anom[3], true_anom[4], true_anom[5], M)
-        
+        l = ecliptic_longitude(v, PERIPHELION[planet])
+        a = right_ascension(l, OBLIQUITY[planet])
+        d = declination(l, OBLIQUITY[planet])
+        phi = lat
+        theta = sidereal_time(SIDEREAL[planet][0], SIDEREAL[planet][1], J, lon)
+        A, h = celestial_body_pos(theta, a, phi, d)
+        print "M={0}".format(M)
+        print "v={0}".format(v)
+        print "l={0}".format(l)
+        print "a={0}".format(a)
+        print "d={0}".format(d)
+        print "theta={0}".format(theta)
+        print "H={0}".format(theta-a)
+        print "--------"
+        print "A={0}".format(A)
+        print "h={0}".format(h)
+
         
 if __name__ == '__main__':
     fire.Fire(SunposApp)

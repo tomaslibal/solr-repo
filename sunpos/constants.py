@@ -16,3 +16,7 @@ PERIPHELION = {
 OBLIQUITY = {
         "Earth": 23.4393
         }
+
+SIDEREAL = {
+        "Earth": (280.1470, 360.9856235)
+        }
