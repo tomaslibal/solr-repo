@@ -157,7 +157,7 @@ def celestial_body_pos(theta, a, phi, d):
 
 def format_time(hour, minute):
     d = datetime(2000, 1, 1, hour, minute, 0)
-    return d.strftime('%I:%M')
+    return d.strftime('%H:%M')
 
 def hour_minute_to_fraction_day(hour, minute):
     whole = 24 * 60
