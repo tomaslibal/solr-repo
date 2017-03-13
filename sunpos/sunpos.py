@@ -120,7 +120,7 @@ def planet_mean_anomaly(m0, m1, jdn):
 
 
 def true_anomaly(c1, c2, c3, c4, c5, c6, m):
-    C = (c1 * sin(radians(m))) + (c2 * sin(radians(2*m))) + (c3 * sin(radians(3*m))) + (c4 * sin(radians(4*m))) + (c5 * sin(radians(5*m))) + (c6 * sin(radians(6*m)))
+    C = (c1 * (sin(radians(m)))) + (c2 * (sin(radians(2*m)))) + (c3 * (sin(radians(3*m)))) + (c4 * (sin(radians(4*m)))) + (c5 * (sin(radians(5*m)))) + (c6 * (sin(radians(6*m))))
     # print "C={0}".format(C)
     return m + C
 
@@ -167,7 +167,7 @@ def hour_minute_to_fraction_day(hour, minute):
 
 class SunposApp():
     def position(self, year, month, day, lat, lon, hour=12, minute=0, planet='Earth'):
-        J = round(JulianDayNumber(year, month, day).jdn()) + hour_minute_to_fraction_day(hour, minute)
+        J = round(JulianDayNumber(year, month, day).jdn()) + hour_minute_to_fraction_day(hour, minute) - 0.5
         M = planet_mean_anomaly(MEAN_ANOMALY[planet][0], MEAN_ANOMALY[planet][1], J)
         true_anom = TRUE_ANOMALY_COEFF[planet]
         v = true_anomaly(true_anom[0], true_anom[1], true_anom[2], true_anom[3], true_anom[4], true_anom[5], M)
@@ -178,6 +178,7 @@ class SunposApp():
         theta = sidereal_time(SIDEREAL[planet][0], SIDEREAL[planet][1], J, lon)
         A, h = celestial_body_pos(theta, a, phi, d)
         """
+        print "J={0}".format(J)
         print "M={0}".format(M)
         print "v={0}".format(v)
         print "l={0}".format(l)
@@ -189,7 +190,9 @@ class SunposApp():
         """
         print "{0}UTC on {1}/{2}/{3}".format(format_time(hour, minute), year, month, day)
         print "lat={0}N lon={1}W".format(lat, lon)
-        print "azimuth A={0}".format(A)
+        if A < 0 and A > -360:
+            A = 360 + A
+        print "azimuth (South) A={0}".format(A)
         print "altitude h={0}".format(h)
 
         
