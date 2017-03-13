@@ -161,13 +161,14 @@ def format_time(hour, minute):
 
 def hour_minute_to_fraction_day(hour, minute):
     whole = 24 * 60
-    t = hour * minute
-    return t / whole
+    t = (hour * 60) + minute
+    return float(t) / float(whole)
 
 
 class SunposApp():
     def position(self, year, month, day, lat, lon, hour=12, minute=0, planet='Earth'):
         J = round(JulianDayNumber(year, month, day).jdn()) + hour_minute_to_fraction_day(hour, minute)
+        print J
         M = planet_mean_anomaly(MEAN_ANOMALY[planet][0], MEAN_ANOMALY[planet][1], J)
         true_anom = TRUE_ANOMALY_COEFF[planet]
         v = true_anomaly(true_anom[0], true_anom[1], true_anom[2], true_anom[3], true_anom[4], true_anom[5], M)
