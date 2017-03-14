@@ -5,6 +5,7 @@ def flatmap(fun, lst):
     return chain.from_iterable(imap(fun ,lst))
 
 compass = (0, 360)
+
 dirs = (
         ('S', 'South', 0),
         ('SW', 'South-West', 45),
@@ -15,6 +16,7 @@ dirs = (
         ('E', 'East', 270),
         ('SE', 'South-East', 315)
         )
+# contains only the major derections S, W, N, E
 simple_dirs = (
         dirs[0],
         dirs[2],
@@ -24,10 +26,12 @@ simple_dirs = (
 
 imp = map(lambda coord: coord[2], dirs)
 simple_imp = map(lambda coord: coord[2], simple_dirs)
+
+# maximal angular difference between two named directions
 maxd = 45
+# maximal angualer difference between two named simple directions
 simple_maxd = 90
 
-angle = 221.10
 
 class Azimuth2d():
 
