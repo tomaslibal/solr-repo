@@ -6,6 +6,8 @@ Usage
 python sunpos.py position YEAR MONTH DAY LAT LON_W [HOUR] [MINUTE]
 ```
 
+- `LON_W` is the western longitude. If the location is east from the prime meridian, then negate its value to get the western longitude.
+
 Supports
 
 1. Mercury
