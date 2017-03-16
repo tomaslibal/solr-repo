@@ -11,6 +11,8 @@ from math import sin, cos, tan, asin, atan2, radians, degrees
 
     Assumes: Earth, Singapore (1.367deg N lat, 103.8deg E lon), 
     J = 12pm Jan 1, 2017.
+    
+    The procedure is adapted from http://aa.quae.nl/en/reken/zonpositie.html
 
     1 The mean anomaly
     ------------------
