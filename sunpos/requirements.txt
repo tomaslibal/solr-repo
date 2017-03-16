@@ -1,2 +1,4 @@
 fire
 jdcal
+mayavi
+numpy
