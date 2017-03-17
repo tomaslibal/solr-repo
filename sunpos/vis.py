@@ -12,7 +12,6 @@ mlab.clf()
 
 def display(lat, lon_w, time, azimuth, h):
     # The position of the atoms
-    #azimuth=-3.35501983171
     alpha=h
     r=3
     sun_x = r * cos(radians(azimuth))
@@ -25,13 +24,6 @@ def display(lat, lon_w, time, azimuth, h):
     pos_y = np.array([0, 3.0])
     pos_z = np.array([0, 2.0])
 
-    """
-    planet = mlab.points3d(pos_x[0], pos_y[0], pos_z[0],
-                  scale_factor=3,
-                  resolution=20,
-                  color=(1, 0, 0),
-                  scale_mode='none')
-    """
     yellow = (242./255., 230./255., 65./255.)
     sun = mlab.points3d(sun_x, sun_y, sun_z,
                    scale_factor=1,
@@ -39,8 +31,9 @@ def display(lat, lon_w, time, azimuth, h):
                    color=yellow,
                    scale_mode='none')
 
-    plane_surf = np.zeros(25).reshape(5,5)
-    plane = mlab.surf(plane_surf)
+    plane_x, plane_y = np.mgrid[-3.:3:0.1, -3.:3:0.1]
+    plane_z = np.zeros(60*60).reshape(60,60)
+    plane = mlab.surf(plane_x, plane_y, plane_z)
 
     mlab.title("Lat={0}deg N, Lon={1}deg W, {2}".format(lat, lon_w, time))
     # mlab.text3d(1.5, 1.5, 0, "A={0}deg S".format(-3.35501983171))
