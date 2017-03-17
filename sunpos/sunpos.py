@@ -169,6 +169,8 @@ def hour_minute_to_fraction_day(hour, minute):
 
 class SunposApp():
     def position(self, year, month, day, lat, lon, hour=12, minute=0, planet='Earth'):
+        hour = int(hour)
+        minute = int(minute)
         J = round(JulianDayNumber(year, month, day).jdn()) + hour_minute_to_fraction_day(hour, minute) - 0.5
         M = planet_mean_anomaly(MEAN_ANOMALY[planet][0], MEAN_ANOMALY[planet][1], J)
         true_anom = TRUE_ANOMALY_COEFF[planet]
