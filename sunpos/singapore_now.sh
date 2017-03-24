@@ -14,5 +14,5 @@ OUT=$(python sunpos.py position $YEAR $MONTH $DAY $LAT $LON_W $HOUR $MINUTE)
 AZIMUTH=$(echo $OUT | awk '{print $8}' | cut -d'=' -f2)
 ALTITUDE=$(echo $OUT | awk '{print $10}' | cut -d'=' -f2)
 
-python vis.py $LAT $LON_W "${YEAR}/${MONTH}/${DAY} ${HOUR}:${MINUTE}" $AZIMUTH $ALTITUDE
+python vis.py $LAT $LON_W "${YEAR}/${MONTH}/${DAY} ${HOUR}:${MINUTE}UTC" $AZIMUTH $ALTITUDE
 
