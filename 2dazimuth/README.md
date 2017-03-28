@@ -8,3 +8,10 @@ The coordinates are South base (South = 0deg)
 ```
 python 2dazimuth.py azimuth DEGREE
 ```
+
+## Usage
+
+```
+Usage:       2dazimuth.py azimuth ANGLE
+             2dazimuth.py azimuth --angle ANGLE
+```
