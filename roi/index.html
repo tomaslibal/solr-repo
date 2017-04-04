@@ -1,0 +1,40 @@
+<!doctype html>
+<html>
+<head>
+<title>roi of solar system with energy storage capacity</title>
+<style>
+label { clear: both; display: block; width: 400px; margin-bottom: 10px; }
+input { float: right; }
+</style>
+<body>
+<form>
+    <label>Upfront cost ($) <input id="cost" type="number"></label>
+    <label>Yearly maintenance ($) <input id="maint" type="number"></label>
+    <label>Daily average output (kWh) <input id="out" type="number" step="0.1"></label>
+    <label>Cost of 1kWh (cents) <input id="price" type="number" value="21.3" step="0.01"></label>
+    <button id="roi_yrs">calculate roi (yrs)</button>
+</form>
+
+<p>Daily average output is calculated as the solar panel output in W times the average
+number of sun light hours on a given day. The result is in Wh. For instance,
+a couple of 80W panels with 6 hours of sun light would produce 2*80*6=0.96kWh
+a day.</p>
+
+<script>
+var d = document;
+var roi_yrs_bt = d.querySelector("#roi_yrs");
+
+roi_yrs_bt.addEventListener("click", function(event) {
+    event.preventDefault();
+    var cost = d.querySelector("#cost").value;
+    var maint = d.querySelector("#maint").value;
+    var out = d.querySelector("#out").value;
+    var ep = d.querySelector("#price").value;
+
+    var t = -(cost / (maint - (360 * out * (ep/100))));
+
+    var result = d.createElement("div");
+    result.innerHTML = 'With ' + cost + '$ cost and ' + maint + '$ yearly maintenance, ' + out + 'kWh of solar power per day at ' + (ep/100) + '$/kWh will have a ROI of ' + (Math.round(t * 100) / 100) + 'years';
+    d.body.append(result);
+});
+</script>
